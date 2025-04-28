@@ -196,11 +196,7 @@ public class SPBRevampedClient implements ClientModInitializer {
 
                 PostPipeline Pipeline = postProcessingManager.getPipeline(VHS_POST);
                 if (Pipeline != null) {
-                    if (shouldRenderCameraEffect()) {
-                        if(!postProcessingManager.isActive(VHS_POST)) {
-                            postProcessingManager.add(VHS_POST);
-                        }
-                    } else if (postProcessingManager.isActive(VHS_POST)) {
+                    if (postProcessingManager.isActive(VHS_POST)) {
                         postProcessingManager.remove(VHS_POST);
                     }
                 }

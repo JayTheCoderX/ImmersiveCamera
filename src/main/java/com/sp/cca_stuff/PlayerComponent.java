@@ -539,38 +539,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
     }
 
     private boolean checkBackroomsTeleport() {
-        if(this.player.isInsideWall()) {
-            if (this.player.getWorld().getRegistryKey() == World.OVERWORLD && !this.isDoingCutscene()) {
-                suffocationTimer++;
-                if (suffocationTimer == 1) {
-                    SPBRevamped.sendPersonalPlaySoundPacket((ServerPlayerEntity) this.player, ModSounds.GLITCH, 1.0f, 1.0f);
-                    this.playingGlitchSound = true;
-                }
-
-                if (suffocationTimer == 40) {
-                    RegistryKey<World> registryKey = BackroomsLevels.LEVEL0_WORLD_KEY;
-                    ServerWorld backrooms = this.player.getWorld().getServer().getWorld(registryKey);
-                    if (backrooms == null) {
-                        return true;
-                    }
-
-                    this.savePlayerInventory();
-                    this.player.getInventory().clear();
-                    TeleportTarget target = new TeleportTarget(new Vec3d(1.5, 22, 1.5), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
-                    FabricDimensions.teleport(this.player, backrooms, target);
-                    this.setDoingCutscene(true);
-                    this.sync();
-                    suffocationTimer = 0;
-                }
-            }
-        } else {
-            if (this.playingGlitchSound) {
-                StopSoundS2CPacket stopSoundS2CPacket = new StopSoundS2CPacket(new Identifier(SPBRevamped.MOD_ID, "glitch"), null);
-                ((ServerPlayerEntity) this.player).networkHandler.sendPacket(stopSoundS2CPacket);
-            }
-            this.playingGlitchSound = false;
-            suffocationTimer = 0;
-        }
         return false;
     }
 
