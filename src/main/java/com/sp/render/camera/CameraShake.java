@@ -35,7 +35,8 @@ public class CameraShake {
     }
     public void ct() {
         PlayerEntity player = MinecraftClient.getInstance().player;
-        this.wompity = this.wompity + (((playerY - player.getY()) - (this.playerOldY - player.getY()))*ConfigStuff.impactStrength);
+        double x = (((playerY - player.getY()) - (this.playerOldY - this.playerY))*ConfigStuff.impactStrength);
+        this.wompity = this.wompity + (x*(Math.abs(x)*ConfigStuff.impactExponentiation));
         this.playerOldY = playerY;
         this.playerY = player.getY();
     }
@@ -48,17 +49,16 @@ public class CameraShake {
             }
             double delta_factor = Math.pow(0.9, frameDelta);
             this.wompity *= delta_factor;
-            this.wompity += ((playerOldY-playerY)*ConfigStuff.fallStrength)*frameDelta;
             PlayerEntity player = MinecraftClient.getInstance().player;
             if (player != null) {
                 float playerSpeed = (player.horizontalSpeed - player.prevHorizontalSpeed) * 6;
 
                 this.traumaGoal = MathHelper.clamp(0.6 * playerSpeed, 0.5, 1.5f);
                 this.noiseSpeedGoal = MathHelper.clamp(0.25 * playerSpeed, 0.1, 1.0f);
-                this.amplitude = 4;
+                this.amplitude = 4+(wompity*ConfigStuff.impactShakeAmplitude);
 
                 this.trauma = Math.max(MathStuff.Lerp((float) this.trauma, (float) this.traumaGoal, 0.93f, frameDelta), 0.5);
-                this.noiseSpeed = Math.max(MathStuff.Lerp((float) this.noiseSpeed, (float) this.noiseSpeedGoal, 0.93f, frameDelta), 0.1);
+                this.noiseSpeed = Math.max(MathStuff.Lerp((float) this.noiseSpeed, (float) this.noiseSpeedGoal, 0.93f, frameDelta), 0.1) + (wompity*ConfigStuff.impactShakeSpeed * frameDelta);
 
                 this.noiseY += ((this.noiseSpeed * frameDelta) * ((playerSpeed*0.6)+0.2));
 
@@ -66,7 +66,7 @@ public class CameraShake {
                 double yawOffset = this.amplitude * this.getShakeIntensity() * (this.noiseSampler.sample(73, this.noiseY, 0));
                 double rollOffset = this.amplitude * this.getShakeIntensity() * (this.noiseSampler.sample(146, this.noiseY, 0));
                 
-                camera.setRotation((float) (camera.getYaw() + yawOffset), (float) (camera.getPitch() + pitchOffset - wompity*5));
+            camera.setRotation((float) (camera.getYaw() + yawOffset), (float) (camera.getPitch() + ((playerOldY-playerY)*ConfigStuff.fallStrength) + pitchOffset - wompity*5));
                 this.cameraZRot = (float) rollOffset * 2;
             }
         }
