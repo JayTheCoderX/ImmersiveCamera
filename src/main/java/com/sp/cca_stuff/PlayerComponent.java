@@ -495,7 +495,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
 
     private void updateStamina() {
         EntityAttributeInstance attributeInstance = this.player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
-        if(attributeInstance != null) {
+        if(attributeInstance != null && false) {
             int prevStamina = this.stamina;
             if(!this.player.isCreative() && !this.player.isSpectator()){
                 if(this.player.isSprinting()) {

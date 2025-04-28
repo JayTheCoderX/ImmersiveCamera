@@ -16,6 +16,8 @@ public class CameraShake {
     public double noiseSpeed;
     private double noiseSpeedGoal;
     private double noiseY;
+    private double playerOldY;
+    private double playerY;
     private double amplitude;
     private PerlinNoiseSampler noiseSampler;
     private float cameraZRot;
@@ -24,9 +26,15 @@ public class CameraShake {
         this.trauma = 0.1;
         this.noiseSpeed = 0.1;
         this.noiseY = 0;
+        this.playerOldY = 0.0;
         this.amplitude = 5;
         this.noiseSampler = new PerlinNoiseSampler(Random.create());
         this.cameraZRot = 0.0f;
+    }
+    public void ct() {
+        PlayerEntity player = MinecraftClient.getInstance().player;
+        this.playerOldY = playerY;
+        this.playerY = player.getY();
     }
 
     public void tick(Camera camera) {
@@ -47,9 +55,9 @@ public class CameraShake {
                 this.trauma = Math.max(MathStuff.Lerp((float) this.trauma, (float) this.traumaGoal, 0.93f, frameDelta), 0.5);
                 this.noiseSpeed = Math.max(MathStuff.Lerp((float) this.noiseSpeed, (float) this.noiseSpeedGoal, 0.93f, frameDelta), 0.1);
 
-                this.noiseY += (this.noiseSpeed * frameDelta);
+                this.noiseY += ((this.noiseSpeed * frameDelta) * ((playerSpeed*0.6)+0.2));
 
-                double pitchOffset = this.amplitude * this.getShakeIntensity() * (this.noiseSampler.sample(1, this.noiseY, 0));
+                double pitchOffset = this.amplitude * this.getShakeIntensity() * (this.noiseSampler.sample(1, this.noiseY, 0) * (((playerOldY-playerY)*frameDelta*1000)));
                 double yawOffset = this.amplitude * this.getShakeIntensity() * (this.noiseSampler.sample(73, this.noiseY, 0));
                 double rollOffset = this.amplitude * this.getShakeIntensity() * (this.noiseSampler.sample(146, this.noiseY, 0));
 

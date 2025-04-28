@@ -127,7 +127,7 @@ public abstract class GameRendererMixin {
             matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(MathHelper.sin(g * (float) Math.PI) * h * 3.0F));
             float multiplier = 5.0f;
             if (ConfigStuff.enableRealCamera) {
-                multiplier = 10.0f;
+                multiplier = 17.0f;
             }
             matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(Math.abs(MathHelper.cos(g * (float) Math.PI - 0.2F) * h) * multiplier));
         }

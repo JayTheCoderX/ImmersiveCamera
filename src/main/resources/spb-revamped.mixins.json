@@ -27,6 +27,7 @@
   "client": [
     "AOFixMixin",
     "CameraMixin",
+    "InterpolMixin",
     "DinoDebugRendererMixin",
     "DisableF3Mixin",
     "DisableJumpMixin",

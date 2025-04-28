@@ -234,7 +234,7 @@ public class SPBRevampedClient implements ClientModInitializer {
                     }
 
                     if(!client.player.isSpectator() && !client.player.isCreative()){
-                        client.options.debugEnabled = false;
+                        //client.options.debugEnabled = false;
                     }
 
                 }
