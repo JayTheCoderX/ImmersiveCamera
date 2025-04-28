@@ -15,6 +15,7 @@ public class CameraShake {
     private double traumaGoal;
     public double noiseSpeed;
     private double noiseSpeedGoal;
+    private double wompity;
     private double noiseY;
     private double playerOldY;
     private double playerY;
@@ -26,6 +27,7 @@ public class CameraShake {
         this.trauma = 0.1;
         this.noiseSpeed = 0.1;
         this.noiseY = 0;
+        this.wompity = 0.0;
         this.playerOldY = 0.0;
         this.amplitude = 5;
         this.noiseSampler = new PerlinNoiseSampler(Random.create());
@@ -33,6 +35,7 @@ public class CameraShake {
     }
     public void ct() {
         PlayerEntity player = MinecraftClient.getInstance().player;
+        this.wompity = this.wompity + (((playerY - player.getY()) - (this.playerOldY - player.getY()))*ConfigStuff.impactStrength);
         this.playerOldY = playerY;
         this.playerY = player.getY();
     }
@@ -43,7 +46,9 @@ public class CameraShake {
             if (this.noiseY >= 1000) {
                 this.noiseY = 0;
             }
-
+            double delta_factor = Math.pow(0.9, frameDelta);
+            this.wompity *= delta_factor;
+            this.wompity += ((playerOldY-playerY)*ConfigStuff.fallStrength)*frameDelta;
             PlayerEntity player = MinecraftClient.getInstance().player;
             if (player != null) {
                 float playerSpeed = (player.horizontalSpeed - player.prevHorizontalSpeed) * 6;
@@ -57,11 +62,11 @@ public class CameraShake {
 
                 this.noiseY += ((this.noiseSpeed * frameDelta) * ((playerSpeed*0.6)+0.2));
 
-                double pitchOffset = this.amplitude * this.getShakeIntensity() * (this.noiseSampler.sample(1, this.noiseY, 0) * (((playerOldY-playerY)*frameDelta*1000)));
+                double pitchOffset = (this.amplitude * this.getShakeIntensity() * (this.noiseSampler.sample(1, this.noiseY, 0)));
                 double yawOffset = this.amplitude * this.getShakeIntensity() * (this.noiseSampler.sample(73, this.noiseY, 0));
                 double rollOffset = this.amplitude * this.getShakeIntensity() * (this.noiseSampler.sample(146, this.noiseY, 0));
-
-                camera.setRotation((float) (camera.getYaw() + yawOffset), (float) (camera.getPitch() + pitchOffset));
+                
+                camera.setRotation((float) (camera.getYaw() + yawOffset), (float) (camera.getPitch() + pitchOffset - wompity*5));
                 this.cameraZRot = (float) rollOffset * 2;
             }
         }

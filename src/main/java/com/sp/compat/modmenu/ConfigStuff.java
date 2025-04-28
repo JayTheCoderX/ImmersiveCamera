@@ -12,6 +12,12 @@ public class ConfigStuff extends MidnightConfig {
     @Entry(category = VIDEO)
     public static boolean enableRealCamera = true;
 
+    @Entry(category = VIDEO)
+    public static double impactStrength = 1f;
+
+    @Entry(category = VIDEO)
+    public static double fallStrength = 1f;
+
     @Entry(category = VIDEO, isSlider = true, min = 0, max = 10)
     public static float lookRollMultiplier = 7.0f;
 
