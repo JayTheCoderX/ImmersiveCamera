@@ -13,19 +13,19 @@ public class ConfigStuff extends MidnightConfig {
     public static boolean enableRealCamera = true;
 
     @Entry(category = VIDEO, isSlider = true, min = -50, max = 50)
-    public static double impactStrength = 1f;
+    public static double impactStrength = 9.86f;
 
     @Entry(category = VIDEO, isSlider = true, min = -50, max = 50)
-    public static double impactExponentiation = 1f;
+    public static double impactExponentiation = 0.18f;
 
     @Entry(category = VIDEO)
     public static double impactShakeAmplitude = 1f;
 
     @Entry(category = VIDEO)
-    public static double impactShakeSpeed = 1f;
+    public static double impactShakeSpeed = 0.1f;
 
     @Entry(category = VIDEO, isSlider = true, min = -10, max = 10)
-    public static double fallStrength = 1f;
+    public static double fallStrength = -2.5f;
 
     @Entry(category = VIDEO, isSlider = true, min = 0, max = 10)
     public static float lookRollMultiplier = 7.0f;
