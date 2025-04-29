@@ -184,7 +184,7 @@ public class ShadowMapRenderer {
 
     //Global Light Rotation
     public static void rotateShadowModelView(Matrix4f shadowModelView, World world){
-        shadowModelView.rotate(RotationAxis.POSITIVE_X.rotationDegrees(PoolroomsDayCycle.getSunAngle()));
+
     }
 
     public static Matrix4f createProjMat(){

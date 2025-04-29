@@ -2,9 +2,7 @@ package com.sp.networking;
 
 import com.sp.SPBRevamped;
 import com.sp.networking.C2S.*;
-import com.sp.networking.S2C.InvokeBlackScreenPacket;
 import com.sp.networking.S2C.InvokeScreenShakePacket;
-import com.sp.networking.S2C.ReloadLightsPacket;
 import com.sp.networking.S2C.SoundPacket;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -36,8 +34,6 @@ public class InitializePackets {
 
     public static void registerS2CPackets() {
         ClientPlayNetworking.registerGlobalReceiver(SCREEN_SHAKE, InvokeScreenShakePacket::receive);
-        ClientPlayNetworking.registerGlobalReceiver(BLACK_SCREEN, InvokeBlackScreenPacket::receive);
-        ClientPlayNetworking.registerGlobalReceiver(RELOAD_LIGHTS, ReloadLightsPacket::receive);
         ClientPlayNetworking.registerGlobalReceiver(SOUND, SoundPacket::receive);
     }
 }

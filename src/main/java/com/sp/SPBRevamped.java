@@ -2,17 +2,8 @@ package com.sp;
 
 import com.sp.cca_stuff.InitializeComponents;
 import com.sp.cca_stuff.PlayerComponent;
-import com.sp.command.BlackScreenCommand;
-import com.sp.command.EventCommand;
-import com.sp.command.GimmeMyInventoryBack;
-import com.sp.command.SkinwalkerCommand;
 import com.sp.compat.modmenu.ConfigStuff;
-import com.sp.entity.custom.SkinWalkerEntity;
-import com.sp.entity.custom.SmilerEntity;
-import com.sp.entity.ik.model.GeckoLib.MowzieModelFactory;
-import com.sp.entity.ik.util.PrAnCommonClass;
 import com.sp.init.*;
-import com.sp.item.ModItemGroups;
 import com.sp.networking.InitializePackets;
 import eu.midnightdust.lib.config.MidnightConfig;
 import net.fabricmc.api.ModInitializer;
@@ -51,36 +42,20 @@ public class SPBRevamped implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-            PrAnCommonClass.isDev = true;
-            PrAnCommonClass.shouldRenderDebugLegs = true;
-            PrAnCommonClass.LOGGER.info("Started in a development environment. Debug renderers will be activated by default.");
-        }
 
-		BackroomsLevels.init();
+		//BackroomsLevels.init();
 
-		ModItems.registerModItems();
-		ModSounds.registerSounds();
+		//ModItems.registerModItems();
+		//ModSounds.registerSounds();
 		InitializePackets.registerC2SPackets();
-		ModItemGroups.registerItemGroups();
-		ModBlocks.init();
-		ModBlockEntities.registerAllBlockEntities();
+		//ModItemGroups.registerItemGroups();
+		//ModBlocks.init();
+		//ModBlockEntities.registerAllBlockEntities();
 		MidnightConfig.init(MOD_ID, ConfigStuff.class);
 
-		CommandRegistrationCallback.EVENT.register(BlackScreenCommand::register);
-//		CommandRegistrationCallback.EVENT.register(CastToTheBackroomsCommand::register);
-		CommandRegistrationCallback.EVENT.register(EventCommand::register);
-		CommandRegistrationCallback.EVENT.register(GimmeMyInventoryBack::register);
-		CommandRegistrationCallback.EVENT.register(SkinwalkerCommand::register);
-
 		// Thanks Bob Mowzie
-		GeckoLibUtil.addCustomBakedModelFactory(MOD_ID, new MowzieModelFactory());
 		GeckoLib.initialize();
 		// !
-		PrAnCommonClass.init();
-
-		FabricDefaultAttributeRegistry.register(ModEntities.SKIN_WALKER_ENTITY, SkinWalkerEntity.createSkinWalkerAttributes());
-		FabricDefaultAttributeRegistry.register(ModEntities.SMILER_ENTITY, SmilerEntity.createSmilerAttributes());
 
 		LOGGER.info("\"WOOOOOOOOOOOOOOOOOOOOOOOooooooooooooooooooooooooo..........\" -He said as he fell into the backrooms, never to be seen again.");
 
@@ -90,39 +65,37 @@ public class SPBRevamped implements ModInitializer {
 		}));
 
 		ServerPlayerEvents.AFTER_RESPAWN.register(((oldPlayer, newPlayer, alive) -> {
-			if(!BackroomsLevels.isInBackrooms(oldPlayer.getWorld().getRegistryKey())) {
-				return;
-			}
-
-			boolean backupInvulnerable;
-			try {
-				ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-				PlayerComponent playerComponent = InitializeComponents.PLAYER.get(newPlayer);
-
-				sendBlackScreenPacket(newPlayer, 120, false, true);
-				backupInvulnerable = newPlayer.getAbilities().invulnerable;
-				newPlayer.getAbilities().invulnerable = true;
-				playerComponent.setShouldRender(false);
-				playerComponent.sync();
-				newPlayer.networkHandler.sendPacket(new PlaySoundS2CPacket(RegistryEntry.of(ModSounds.NO_ESCAPE), SoundCategory.AMBIENT, newPlayer.getPos().getX(), newPlayer.getPos().getY(), newPlayer.getPos().getZ(), 100.0f, 1.0f, newPlayer.getRandom().nextLong()));
-
-				//After YOU CAN'T ESCAPE is over
-				executorService.schedule(() -> {
-					playerComponent.setShouldRender(true);
-					playerComponent.setShouldDoStatic(true);
-					playerComponent.sync();
-					newPlayer.getAbilities().invulnerable = backupInvulnerable;
-					executorService.shutdown();
-				}, 6000, TimeUnit.MILLISECONDS);
-
-				executorService.schedule(() -> {
-					playerComponent.setShouldDoStatic(false);
-					playerComponent.sync();
-					executorService.shutdown();
-				}, 8000, TimeUnit.MILLISECONDS);
-			} catch (Exception e) {
-				LOGGER.error("Error in AFTER_RESPAWN event: {}", String.valueOf(e));
-			}
+			return;
+			//if(!BackroomsLevels.isInBackrooms(oldPlayer.getWorld().getRegistryKey())) {
+			//	return;
+			//}
+//
+			//boolean backupInvulnerable;
+			//try {
+			//	ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+			//	PlayerComponent playerComponent = InitializeComponents.PLAYER.get(newPlayer);
+			//	sendBlackScreenPacket(newPlayer, 120, false, true);
+			//	backupInvulnerable = newPlayer.getAbilities().invulnerable;
+			//	newPlayer.getAbilities().invulnerable = true;
+			//	playerComponent.setShouldRender(false);
+			//	playerComponent.sync();
+			//	newPlayer.networkHandler.sendPacket(new PlaySoundS2CPacket(RegistryEntry.of(ModSounds.NO_ESCAPE), SoundCategory.AMBIENT, newPlayer.getPos().getX(), newPlayer.getPos().getY(), newPlayer.getPos().getZ(), 100.0f, 1.0f, newPlayer.getRandom().nextLong()));
+			//	//After YOU CAN'T ESCAPE is over
+			//	executorService.schedule(() -> {
+			//		playerComponent.setShouldRender(true);
+			//		playerComponent.setShouldDoStatic(true);
+			//		playerComponent.sync();
+			//		newPlayer.getAbilities().invulnerable = backupInvulnerable;
+			//		executorService.shutdown();
+			//	}, 6000, TimeUnit.MILLISECONDS);
+			//	executorService.schedule(() -> {
+			//		playerComponent.setShouldDoStatic(false);
+			//		playerComponent.sync();
+			//		executorService.shutdown();
+			//	}, 8000, TimeUnit.MILLISECONDS);
+			//} catch (Exception e) {
+			//	LOGGER.error("Error in AFTER_RESPAWN event: {}", String.valueOf(e));
+			//}
 		}));
 	}
 

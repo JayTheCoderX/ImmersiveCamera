@@ -143,13 +143,4 @@ public class InGameHudMixin {
         }
     }
 
-    @Inject(method = "renderVignetteOverlay", at = @At("HEAD"), cancellable = true)
-    private void disableVignette(CallbackInfo ci){
-        if (SPBRevampedClient.shouldRenderCameraEffect()) {
-            if (SPBRevampedClient.getCutsceneManager().isPlaying || SPBRevampedClient.getCutsceneManager().blackScreen.isBlackScreen) {
-                ci.cancel();
-            }
-        }
-    }
-
 }

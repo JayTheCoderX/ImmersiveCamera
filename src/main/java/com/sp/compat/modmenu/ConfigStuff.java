@@ -12,6 +12,9 @@ public class ConfigStuff extends MidnightConfig {
     @Entry(category = VIDEO)
     public static boolean enableRealCamera = true;
 
+    @Entry(category = VIDEO)
+    public static boolean hideNameTags = true;
+
     @Entry(category = VIDEO, isSlider = true, min = -50, max = 50)
     public static double impactStrength = 9.86f;
 

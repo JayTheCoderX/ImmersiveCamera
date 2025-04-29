@@ -16,7 +16,7 @@ public class EntityRenderDispatcherMixin {
     @Inject(method = "setRenderShadows", at = @At("TAIL"))
     private void setRenderShadows(boolean renderShadows, CallbackInfo ci){
         if (SPBRevampedClient.shouldRenderCameraEffect()) {
-            this.renderShadows = false;
+            //this.renderShadows = false;
         }
     }
 }

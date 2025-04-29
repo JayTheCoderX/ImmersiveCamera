@@ -2,12 +2,9 @@ package com.sp.cca_stuff;
 
 import com.sp.SPBRevamped;
 import com.sp.clientWrapper.ClientWrapper;
-import com.sp.init.BackroomsLevels;
 import com.sp.init.ModDamageTypes;
 import com.sp.init.ModSounds;
 import com.sp.mixininterfaces.ServerPlayNetworkSprint;
-import com.sp.sounds.voicechat.BackroomsVoicechatPlugin;
-import com.sp.world.levels.BackroomsLevel;
 import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent;
@@ -427,41 +424,8 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         }
 
         //*Is speaking
-        if(BackroomsVoicechatPlugin.speakingTime.containsKey(this.player.getUuid()) && BackroomsVoicechatPlugin.speakingTime.get(this.player.getUuid()) == this.prevSpeakingTime) {
-            if(this.isSpeaking()) {
-                this.speakingBuffer--;
-                if (this.speakingBuffer <= 0) {
-                    this.setSpeaking(false);
-                    this.speakingBuffer = 80;
-                }
-            }
-        } else {
-            this.speakingBuffer = 80;
-        }
-
         //*Cast him to the Backrooms
         if (checkBackroomsTeleport()) return;
-
-        BackroomsLevel level = BackroomsLevels.getLevel(this.player.getWorld());
-
-        if (level != null) {
-            List<BackroomsLevel.LevelTransition> teleports = level.checkForTransition(this, this.player.getWorld());
-
-            if (!teleports.isEmpty()) {
-                for (BackroomsLevel.CrossDimensionTeleport crossDimensionTeleport : teleports.get(0).predicate(this.player.getWorld(), this, BackroomsLevels.getLevel(this.player.getWorld()))) {
-                    if (crossDimensionTeleport.from().transitionOut(crossDimensionTeleport.to(), this, crossDimensionTeleport.world())) {
-                        if (teleportingTimer == -1) {
-                            teleportingTimer = 20;
-                        }
-
-                        if (teleportingTimer == 0) {
-                            TeleportTarget target = new TeleportTarget(crossDimensionTeleport.pos(), crossDimensionTeleport.playerComponent().player.getVelocity(), crossDimensionTeleport.playerComponent().player.getYaw(), crossDimensionTeleport.playerComponent().player.getPitch());
-                            FabricDimensions.teleport(crossDimensionTeleport.playerComponent().player, crossDimensionTeleport.world().getServer().getWorld(crossDimensionTeleport.to().getWorldKey()), target);
-                        }
-                    }
-                }
-            }
-        }
 
         if (teleportingTimer >= 0) {
             teleportingTimer--;
@@ -484,11 +448,7 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         */
 
         //*Update Entity Visibility
-        updateEntityVisibility();
 
-        if(BackroomsVoicechatPlugin.speakingTime.containsKey(this.player.getUuid())) {
-            this.prevSpeakingTime = BackroomsVoicechatPlugin.speakingTime.get(this.player.getUuid());
-        }
         
         shouldSync();
     }
@@ -573,138 +533,6 @@ public class PlayerComponent implements AutoSyncedComponent, ClientTickingCompon
         }
     }
     */
-
-    private void checkLevel2Teleport() {
-        if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
-            ServerWorld level2 = this.player.getWorld().getServer().getWorld(BackroomsLevels.LEVEL2_WORLD_KEY);
-
-            if (this.readyForLevel2) {
-                this.currentTeleportChunkPos = this.player.getChunkPos();
-                for (PlayerEntity players : this.player.getServer().getPlayerManager().getPlayerList()) {
-                    if(players.getWorld().getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
-                        PlayerComponent playerComponent = InitializeComponents.PLAYER.get(players);
-                        playerComponent.setReadyForLevel1(false);
-
-                        TeleportTarget target = new TeleportTarget(calculateLevel2TeleportCoords(players), players.getVelocity(), players.getYaw(), players.getPitch());
-                        FabricDimensions.teleport(players, level2, target);
-                    }
-                }
-                this.currentTeleportChunkPos = null;
-            }
-
-            if (this.player.getPos().getY() <= 12.5 && this.player.isOnGround()) {
-                if (!this.isTeleporting() && !this.readyForLevel2) {
-                    for (PlayerEntity players : this.player.getServer().getPlayerManager().getPlayerList()) {
-                        if (players.getWorld().getRegistryKey() == BackroomsLevels.LEVEL1_WORLD_KEY) {
-                            teleportPlayer(players, 2);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private void checkPoolroomsTeleport() {
-        if (this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
-            ServerWorld poolrooms = this.player.getWorld().getServer().getWorld(BackroomsLevels.POOLROOMS_WORLD_KEY);
-
-            if (Math.abs(this.player.getPos().getZ()) >= 1000) {
-                this.level2Timer--;
-                if(level2Timer <= 0){
-                    if (!this.isTeleporting() && !this.readyForPoolrooms) {
-                        startLevel2Teleport(this.player);
-                    }
-                    if (this.readyForPoolrooms) {
-                        if(this.player.getWorld().getRegistryKey() == BackroomsLevels.LEVEL2_WORLD_KEY) {
-                            TeleportTarget target = new TeleportTarget(new Vec3d(16, 106, 16), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
-                            FabricDimensions.teleport(this.player, poolrooms, target);
-                        }
-                        this.readyForPoolrooms = false;
-                    }
-                }
-            } else {
-                this.level2Timer = 200;
-                this.readyForPoolrooms = false;
-            }
-        }
-    }
-
-    private void checkGrassFieldsTeleport() {
-        if(this.player.getWorld().getRegistryKey() == BackroomsLevels.POOLROOMS_WORLD_KEY && this.player.getWorld().getLightLevel(this.player.getBlockPos()) == 0 && this.player.getPos().y < 60 && this.player.getPos().y > 52){
-            this.player.fallDistance = 0;
-            if(this.player instanceof ServerPlayerEntity) {
-                SPBRevamped.sendBlackScreenPacket((ServerPlayerEntity) this.player, 60, true, false);
-                ServerWorld grassField = this.player.getWorld().getServer().getWorld(BackroomsLevels.INFINITE_FIELD_WORLD_KEY);
-                TeleportTarget target = new TeleportTarget(new Vec3d(0, 32, 0), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
-                FabricDimensions.teleport(this.player, grassField, target);
-            }
-        }
-    }
-
-    private void checkOverWroldReturnTeleport() {
-        if(this.player.getWorld().getRegistryKey() == BackroomsLevels.INFINITE_FIELD_WORLD_KEY && this.player.getPos().y > 57.5 && this.player.isOnGround()){
-            if(this.player instanceof ServerPlayerEntity) {
-                BlockPos blockPos = ((ServerPlayerEntity)this.player).getSpawnPointPosition();
-                float f = ((ServerPlayerEntity)this.player).getSpawnAngle();
-                boolean bl = ((ServerPlayerEntity)this.player).isSpawnForced();
-                ServerWorld serverWorld = this.player.getWorld().getServer().getWorld(World.OVERWORLD);
-                Optional<Vec3d> optional;
-                if (serverWorld != null && blockPos != null) {
-                    optional = PlayerEntity.findRespawnPosition(serverWorld, blockPos, f, bl, true);
-                } else {
-                    optional = Optional.empty();
-                }
-
-                SPBRevamped.sendBlackScreenPacket((ServerPlayerEntity) this.player, 60, true, false);
-                ServerWorld overworld = this.player.getWorld().getServer().getWorld(World.OVERWORLD);
-                BlockPos blockPos1 = overworld.getSpawnPos();
-                TeleportTarget target = new TeleportTarget(optional.orElseGet(() -> Vec3d.of(blockPos1)), Vec3d.ZERO, this.player.getYaw(), this.player.getPitch());
-                this.loadPlayerSavedInventory();
-                FabricDimensions.teleport(this.player, overworld, target);
-            }
-        }
-    }
-
-    private void updateEntityVisibility() {
-        if(this.isTalkingTooLoud() && this.talkingTooLoudTimer >= 0){
-            this.setVisibleToEntity(true);
-            this.talkingTooLoudTimer--;
-        } else if(this.talkingTooLoudTimer <= 0){
-            this.setVisibleToEntity(false);
-            this.setTalkingTooLoud(false);
-            this.resetTalkingTooLoudTimer();
-        }
-
-        if(!this.isVisibleToEntity()) {
-            float speed = this.player.horizontalSpeed - this.player.prevHorizontalSpeed;
-
-            if (!this.player.isSneaking() && speed != 0) {
-                this.visibilityTimer--;
-            }
-            if (this.player.isSprinting()) {
-                this.visibilityTimer--;
-            }
-
-            //reset timer if the player is not moving
-            if(speed == 0){
-                this.visibilityTimer = 15;
-            }
-
-            if (this.visibilityTimer <= 0) {
-                this.visibilityTimerCooldown = 20;
-                this.setVisibleToEntity(true);
-            }
-        } else {
-            if(this.visibilityTimerCooldown > 0){
-                this.visibilityTimerCooldown--;
-            } else {
-                this.visibilityTimer = 15;
-                if(!this.isTalkingTooLoud()) {
-                    this.setVisibleToEntity(false);
-                }
-            }
-        }
-    }
 
 
     private void shouldSync() {

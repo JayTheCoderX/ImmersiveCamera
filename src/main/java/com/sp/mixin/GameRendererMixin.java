@@ -5,7 +5,6 @@ import com.sp.SPBRevampedClient;
 import com.sp.compat.modmenu.ConfigStuff;
 import com.sp.render.ShadowMapRenderer;
 import com.sp.render.camera.CameraRoll;
-import com.sp.render.camera.CutsceneManager;
 import com.sp.util.MathStuff;
 import foundry.veil.api.client.render.VeilRenderSystem;
 import net.minecraft.client.MinecraftClient;
@@ -63,12 +62,9 @@ public abstract class GameRendererMixin {
             this.setBlockOutlineEnabled(true);
 
             if (player != null) {
-                CutsceneManager cutsceneManager = SPBRevampedClient.getCutsceneManager();
 
-                if (ConfigStuff.enableRealCamera && !cutsceneManager.isPlaying && client.getCameraEntity() == player) {
+                if (ConfigStuff.enableRealCamera && client.getCameraEntity() == player) {
                     matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(CameraRoll.doCameraRoll(player, tickDelta)));
-                } else if (cutsceneManager.isPlaying) {
-                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(cutsceneManager.cameraRotZ));
                 }
             }
         }
@@ -185,13 +181,6 @@ public abstract class GameRendererMixin {
             return;
         }
         cir.setReturnValue(shader.toShaderInstance());
-    }
-
-    @Redirect(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;renderHand(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/Camera;F)V"))
-    private void redirect(GameRenderer instance, MatrixStack matrices, Camera camera, float tickDelta) {
-        if(!SPBRevampedClient.getCutsceneManager().isPlaying){
-            this.renderHand(matrices, camera, tickDelta);
-        }
     }
 
     @Redirect(method = "updateTargetedEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;getReachDistance()F"))

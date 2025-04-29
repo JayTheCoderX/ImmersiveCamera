@@ -29,10 +29,6 @@ public abstract class MinecraftClientMixin {
 
     @ModifyArg(method = "handleInputEvents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;setPerspective(Lnet/minecraft/client/option/Perspective;)V"))
     private Perspective disableF5(Perspective perspective){
-        if(SPBRevampedClient.getCutsceneManager().isPlaying) {
-            return Perspective.FIRST_PERSON;
-        }
-
         return perspective;
     }
 
@@ -45,7 +41,7 @@ public abstract class MinecraftClientMixin {
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;render(Z)V", shift = At.Shift.AFTER))
     private void enableDeferredResourcePack(CallbackInfo ci){
-        if (instance != null && resourcePackManager != null) {
+        if (instance != null && resourcePackManager != null && false) {
             if(!resourcePackManager.getEnabledProfiles().contains(resourcePackManager.getProfile("veil:deferred"))) {
                 SPBRevamped.LOGGER.info("Re-enabled Deferred Resourcepack");
                 resourcePackManager.enable("veil:deferred");

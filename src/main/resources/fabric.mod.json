@@ -30,9 +30,6 @@
 		],
 		"modmenu": [
 			"com.sp.init.ModMenuMenu"
-		],
-		"voicechat": [
-			"com.sp.sounds.voicechat.BackroomsVoicechatPlugin"
 		]
 	},
 	"custom": {

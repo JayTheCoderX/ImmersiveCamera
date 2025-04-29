@@ -1,19 +1,19 @@
 package com.sp.render.pbr;
 
 import com.sp.SPBRevamped;
-import com.sp.init.ModBlocks;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayers;
-import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registries;           
 
 /**
  * In case I need a certain block to be binded to a certain ID. Kinda like how iris does it.<br>
  * Also keeps me from making a new render layer every time I need to access only a specific block. <br>
  * Lets me easily access certain blocks when running the shaders.
  */
+
 public class BlockIdMap {
     private static Object2IntMap<Block> BlockIDs = null;
     public static boolean init = false;
@@ -42,10 +42,6 @@ public class BlockIdMap {
         SPBRevamped.LOGGER.info("Loaded {} Default Block IDs", numOfBlocks);
 
         //Custom IDs
-        BlockIDs.put(ModBlocks.PoolTiles, 18);
-        BlockIDs.put(ModBlocks.CEILINGLIGHT, 15);
-        BlockIDs.put(ModBlocks.EmergencyLight, 19);
-        BlockIDs.put(ModBlocks.POWER_POLE, 20);
     }
 
     public static int getBlockID(Block block) {
