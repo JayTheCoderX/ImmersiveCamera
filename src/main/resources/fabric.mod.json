@@ -64,7 +64,6 @@
 		"mod-menu": "*"
 	},
 	"breaks": {
-		"sodium": "*",
 		"create": "*",
 		"iris": "*",
 		"optifine": "*",

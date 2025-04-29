@@ -42,7 +42,7 @@ public class FlashlightRenderer {
                             Quaternionf orientation = new Quaternionf().rotateXYZ((float) -Math.toRadians(player.getPitch(partialTicks)), (float) Math.toRadians(player.getYaw(partialTicks)), 0.0f);
                             VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(areaLight
                                     .setBrightness(2.5f)
-                                    .setColor(217, 199, 146)
+                                    .setColor(0.85f, 0.78f, 0.57f)
                                     .setDistance(25f)
                                     .setSize(0, 0)
                                     .setPosition(playerPos.getX(), playerPos.getY(), playerPos.getZ())
@@ -51,7 +51,6 @@ public class FlashlightRenderer {
                             VeilRenderSystem.renderer().getDeferredRenderer().getLightRenderer().addLight(areaLight2
                                     .setBrightness(1.7f)
                                     .setAngle(0.3176499f)
-                                    .setColor(250, 250, 250)
                                     .setDistance(25f)
                                     .setSize(0, 0)
                                     .setPosition(playerPos.getX(), playerPos.getY(), playerPos.getZ())
