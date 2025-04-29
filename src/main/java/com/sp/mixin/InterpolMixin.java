@@ -1,9 +1,7 @@
 package com.sp.mixin;
 
 import com.sp.SPBRevampedClient;
-import net.minecraft.client.render.Camera;
-import net.minecraft.entity.Entity;
-import net.minecraft.world.BlockView;
+
 import org.spongepowered.asm.mixin.Mixin;
 import net.minecraft.client.network.ClientPlayerEntity;
 import org.spongepowered.asm.mixin.injection.At;

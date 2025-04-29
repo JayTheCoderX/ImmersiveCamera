@@ -12,7 +12,6 @@ import com.sp.render.camera.CameraShake;
 import com.sp.render.grass.GrassRenderer;
 import com.sp.render.gui.StaminaBar;
 import com.sp.render.pbr.PbrRegistry;
-import com.sp.render.RenderLayers;
 import com.sp.util.MathStuff;
 import com.sp.util.TickTimer;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
@@ -56,15 +55,8 @@ import java.util.Vector;
 
 
 public class SPBRevampedClient implements ClientModInitializer {
-    private GrassRenderer grassRenderer;
     private static final CameraShake cameraShake = new CameraShake();
     private final FlashlightRenderer flashlightRenderer = new FlashlightRenderer();
-    private static final Identifier VHS_POST = new Identifier(SPBRevamped.MOD_ID, "vhs");
-    private static final Identifier SSAO = new Identifier(SPBRevamped.MOD_ID, "vhs/ssao");
-    private static final Identifier EVERYTHING_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/everything");
-    private static final Identifier POST_VHS = new Identifier(SPBRevamped.MOD_ID, "vhs/vhs_post");
-    private static final Identifier MIXED_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/mixed");
-    private static final Identifier GLITCH_SHADER = new Identifier(SPBRevamped.MOD_ID, "vhs/glitch");
 
     static boolean inBackrooms = false;
     public static Camera camera;
@@ -180,8 +172,12 @@ public class SPBRevampedClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register((client) ->{
 
             PlayerEntity playerClient = client.player;
+            
             if(playerClient != null){
-                //*Main Set in Backrooms
+                VeilRenderer renderer = VeilRenderSystem.renderer();
+                VeilDeferredRenderer deferredRenderer = renderer.getDeferredRenderer();
+                LightRenderer lightRenderer = deferredRenderer.getLightRenderer();
+                lightRenderer.enableVanillaLight();
             }
         });
 

@@ -46,7 +46,7 @@ public class SPBRevamped implements ModInitializer {
 		//BackroomsLevels.init();
 
 		//ModItems.registerModItems();
-		//ModSounds.registerSounds();
+		ModSounds.registerSounds();
 		InitializePackets.registerC2SPackets();
 		//ModItemGroups.registerItemGroups();
 		//ModBlocks.init();
